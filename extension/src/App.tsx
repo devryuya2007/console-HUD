@@ -7,7 +7,7 @@ function App() {
               <p className="text-xs uppercase tracking-[0.5em] text-slate-400">shortcut</p>
               <p className="mt-1 text-sm text-slate-400">３アクションを下へ羅列</p>
             </div>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-1 flex-col justify-between gap-2">
             <div className="rounded-2xl bg-gradient-to-r from-indigo-500/60 to-slate-900/60 px-3 py-3 text-white shadow shadow-indigo-500/40">
               <span className="block text-sm font-semibold tracking-widest">Ctrl + Shift + R</span>
               <span className="block text-xs uppercase tracking-[0.5em] text-slate-300">ハードリセット</span>
