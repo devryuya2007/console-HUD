@@ -4,8 +4,8 @@
   "description": "ショートカットキーからコンソールやストレージの操作を呼び出せる軽量デバッグHUD",
   "version": "0.1.0",
   "icons": {
-    "48": "public/vite.svg",
-    "128": "public/vite.svg"
+    "48": "vite.svg",
+    "128": "vite.svg"
   },
   "action": {
     "default_title": "console-HUD",
