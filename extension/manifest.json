@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "console-HUD",
+  "description": "ショートカットキーからコンソールやストレージの操作を呼び出せる軽量デバッグHUD",
+  "version": "0.1.0",
+  "icons": {
+    "48": "public/vite.svg",
+    "128": "public/vite.svg"
+  },
+  "action": {
+    "default_title": "console-HUD",
+    "default_popup": "popup.html"
+  },
+  "permissions": ["storage", "tabs", "activeTab", "scripting"],
+  "host_permissions": ["<all_urls>"],
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+R"
+      },
+      "description": "ショートカットでHUDのポップアップを開く"
+    }
+  }
+}
