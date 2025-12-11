@@ -28,6 +28,7 @@
     "display:flex",
     "flex-direction:column",
     "gap:12px",
+    "pointer-events:auto",
     "opacity:0",
     "transition:opacity 0.2s ease",
     "z-index:2147483647",
@@ -277,20 +278,52 @@
       emptyCard.style.cssText = [
         "display:flex",
         "flex-direction:column",
-        "gap:6px",
-        "padding:16px",
-        "border-radius:20px",
-        "background:linear-gradient(130deg, rgba(16,185,129,0.15), rgba(5,150,105,0.15))",
-        "border:1px dashed rgba(5,150,105,0.6)",
+        "gap:10px",
+        "padding:18px",
+        "border-radius:24px",
+        "background:linear-gradient(135deg, rgba(14,165,233,0.15), rgba(59,130,246,0.15))",
+        "border:1px solid rgba(59,130,246,0.6)",
+        "box-shadow:0 15px 30px rgba(15,23,42,0.4)",
+      ].join(";");
+      const badge = document.createElement("span");
+      badge.textContent = "localStorage Empty";
+      badge.style.cssText = [
+        "align-self:flex-start",
+        "padding:4px 10px",
+        "border-radius:9999px",
+        "font-size:0.65rem",
+        "letter-spacing:0.2em",
+        "text-transform:uppercase",
+        "background:rgba(59,130,246,0.18)",
+        "border:1px solid rgba(59,130,246,0.4)",
       ].join(";");
       const title = document.createElement("strong");
-      title.textContent = "localStorage は空です";
-      title.style.color = "#bbf7d0";
+      title.textContent = "データはまだありません";
+      title.style.fontSize = "1rem";
+      title.style.color = "#e0f2fe";
       const description = document.createElement("p");
       description.style.margin = "0";
-      description.style.fontSize = "0.8rem";
-      description.textContent = "データを追加するとここにカードとして並びます。";
-      emptyCard.append(title, description);
+      description.style.color = "rgba(226,232,240,0.75)";
+      description.style.fontSize = "0.85rem";
+      description.textContent = "localStorage に何も登録されていないためここも空っぽになっています。";
+      const hint = document.createElement("div");
+      hint.style.cssText = [
+        "display:flex",
+        "align-items:center",
+        "gap:8px",
+        "padding:8px 14px",
+        "border-radius:16px",
+        "background:rgba(15,118,110,0.2)",
+        "border:1px solid rgba(15,118,110,0.4)",
+      ].join(";");
+      const spark = document.createElement("span");
+      spark.textContent = "✨";
+      const sparkText = document.createElement("span");
+      sparkText.style.color = "rgba(14,165,233,0.85)";
+      sparkText.style.fontSize = "0.75rem";
+      sparkText.textContent = "DevTools で localStorage に値を追加すると、ここにカードで表示されます";
+      hint.append(spark, sparkText);
+      emptyCard.append(badge, title, description, hint);
       content.append(emptyCard);
       return content;
     }

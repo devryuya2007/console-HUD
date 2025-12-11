@@ -32,19 +32,22 @@
   "commands": {
     "hard-reset": {
       "suggested_key": {
-        "default": "Ctrl+Shift+R"
+        "default": "Ctrl+Shift+Alt+R",
+        "mac": "Command+Shift+Alt+R"
       },
       "description": "Hard Reset: キャッシュを無視してページを再読み込みする"
     },
     "console-display": {
       "suggested_key": {
-        "default": "Ctrl+Shift+C"
+        "default": "Ctrl+Shift+Alt+C",
+        "mac": "Command+Shift+Alt+C"
       },
       "description": "console 表示パネルをオーバーレイで表示する"
     },
     "localstorage-display": {
       "suggested_key": {
-        "default": "Ctrl+Shift+L"
+        "default": "Ctrl+Shift+Alt+L",
+        "mac": "Command+Shift+Alt+L"
       },
       "description": "localStorage 情報をオーバーレイで表示する"
     }
