@@ -11,14 +11,42 @@
     "default_title": "console-HUD",
     "default_popup": "popup.html"
   },
-  "permissions": ["storage", "tabs", "activeTab", "scripting"],
+  "background": {
+    "service_worker": "service-worker.js"
+  },
+  "permissions": [
+    "storage",
+    "tabs",
+    "activeTab",
+    "scripting",
+    "browsingData"
+  ],
   "host_permissions": ["<all_urls>"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content-script.js"],
+      "run_at": "document_start"
+    }
+  ],
   "commands": {
-    "_execute_action": {
+    "hard-reset": {
       "suggested_key": {
         "default": "Ctrl+Shift+R"
       },
-      "description": "ショートカットでHUDのポップアップを開く"
+      "description": "Hard Reset: キャッシュを無視してページを再読み込みする"
+    },
+    "console-display": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+C"
+      },
+      "description": "console 表示パネルをオーバーレイで表示する"
+    },
+    "localstorage-display": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+L"
+      },
+      "description": "localStorage 情報をオーバーレイで表示する"
     }
   }
 }
