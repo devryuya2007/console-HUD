@@ -1,5 +1,5 @@
 interface ShortcutAction {
-  command: "hard-reset" | "console-display" | "localstorage-display";
+  command: "hard-reset" | "localstorage-display";
   hotkey: string;
   label: string;
   gradient: string;
