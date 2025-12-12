@@ -91,12 +91,11 @@ function buildRemovalOptions(origin) {
  * @returns {Promise<void>}
  */
 function clearSiteData(origin) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const options = buildRemovalOptions(origin);
     chrome.browsingData.remove(options, DATA_TO_REMOVE, () => {
       if (chrome.runtime.lastError) {
-        reject(new Error(chrome.runtime.lastError.message));
-        return;
+        console.warn("browsingData.remove failed:", chrome.runtime.lastError.message);
       }
       resolve();
     });
@@ -123,13 +122,16 @@ async function handleCommand(command) {
   }
 }
 
+/**
+ * ハードリセットの実行
+ * @param {chrome.tabs.Tab} tab
+ */
 async function performHardReset(tab) {
   const origin = buildOrigin(tab.url);
   try {
     await clearSiteData(origin);
+  } finally {
     chrome.tabs.reload(tab.id, { bypassCache: true });
-  } catch {
-    //
   }
 }
 
