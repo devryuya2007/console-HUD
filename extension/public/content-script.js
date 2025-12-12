@@ -166,38 +166,39 @@
       "overflow-wrap:break-word",
     ].join(";");
 
-    const layout = document.createElement("dl");
+    const layout = document.createElement("div");
     layout.style.cssText = [
-      "display:grid",
-      "grid-template-columns:minmax(120px,1fr) minmax(0,2fr)",
-      "gap:4px 14px",
-      "align-items:start",
+      "display:flex",
+      "flex-direction:column",
+      "gap:6px",
       "margin:0",
-      "padding:0",
     ].join(";");
 
-    const keyLabel = document.createElement("dt");
+    const keyLabel = document.createElement("span");
     keyLabel.textContent = entry.key;
     keyLabel.style.cssText = [
       "margin:0",
-      "font-size:0.7rem",
-      "letter-spacing:0.25em",
-      "color:rgba(148,163,184,0.9)",
+      "font-size:0.75rem",
+      "letter-spacing:0.15em",
+      "opacity:0.85",
+      "color:rgba(148,163,184,0.95)",
     ].join(";");
 
-    const valueLabel = document.createElement("dd");
+    const valueLabel = document.createElement("div");
     valueLabel.textContent = formatStorageValue(entry.value);
     valueLabel.style.cssText = [
       "margin:0",
       "font-size:0.9rem",
       "line-height:1.4",
       "color:#e0f2fe",
-      "background:rgba(59,130,246,0.06)",
-      "border-radius:12px",
-      "padding:8px 10px",
+      "background:linear-gradient(180deg, rgba(15,23,42,0.7), rgba(30,64,175,0.4))",
+      "border-radius:14px",
+      "padding:12px",
+      "min-height:48px",
       "overflow-wrap:anywhere",
       "white-space:pre-wrap",
-      "border-left:1px solid rgba(59,130,246,0.25)",
+      "border:1px solid rgba(59,130,246,0.25)",
+      "box-shadow:0 10px 20px rgba(15,23,42,0.4)",
     ].join(";");
 
     layout.append(keyLabel, valueLabel);
