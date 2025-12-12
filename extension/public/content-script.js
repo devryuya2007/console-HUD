@@ -8,6 +8,8 @@
   const consoleHistory = [];
   const commandResults = [];
   let hideTimerId = 0;
+  let storagePanelVisible = false;
+  let currentPanelType = "";
 
   const overlay = document.createElement("div");
   overlay.style.cssText = [
@@ -159,6 +161,8 @@
     window.setTimeout(() => {
       overlay.hidden = true;
     }, 200);
+    storagePanelVisible = false;
+    currentPanelType = "";
   }
 
   /**
@@ -381,7 +385,7 @@
     if (commandResults.length > MAX_COMMAND_HISTORY) {
       commandResults.pop();
     }
-    showPanel(PANEL_CONSOLE);
+    showConsolePanel();
   }
 
   /**
@@ -508,14 +512,31 @@
    * 表示用のパネルを切り替える
    * @param {string} type
    */
-  function showPanel(type) {
+  function showConsolePanel() {
+    storagePanelVisible = false;
+    currentPanelType = PANEL_CONSOLE;
     headerTimestamp.textContent = new Date().toLocaleTimeString();
+    headerTitle.textContent = "console";
     panelBody.innerHTML = "";
-    headerTitle.textContent = type === PANEL_STORAGE ? "localStorage" : "console";
-    panelBody.append(type === PANEL_STORAGE ? renderStoragePanel() : renderConsolePanel());
+    panelBody.append(renderConsolePanel());
     overlay.hidden = false;
     overlay.style.opacity = "1";
     resetHideTimer();
+  }
+
+  function toggleStoragePanel() {
+    if (storagePanelVisible && currentPanelType === PANEL_STORAGE) {
+      hideOverlay();
+      return;
+    }
+    storagePanelVisible = true;
+    currentPanelType = PANEL_STORAGE;
+    headerTimestamp.textContent = new Date().toLocaleTimeString();
+    headerTitle.textContent = "localStorage";
+    panelBody.innerHTML = "";
+    panelBody.append(renderStoragePanel());
+    overlay.hidden = false;
+    overlay.style.opacity = "1";
   }
 
   /**
@@ -526,11 +547,18 @@
       return;
     }
     if (message.type === "SHOW_CONSOLE_PANEL") {
-      showPanel(PANEL_CONSOLE);
+      showConsolePanel();
       return;
     }
     if (message.type === "SHOW_LOCALSTORAGE_PANEL") {
-      showPanel(PANEL_STORAGE);
+      toggleStoragePanel();
+    }
+  });
+
+  window.addEventListener("storage", () => {
+    if (storagePanelVisible && currentPanelType === PANEL_STORAGE) {
+      panelBody.innerHTML = "";
+      panelBody.append(renderStoragePanel());
     }
   });
 
