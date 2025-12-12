@@ -141,6 +141,18 @@
     return entries;
   }
 
+  function formatStorageValue(value) {
+    if (typeof value !== "string") {
+      return "null";
+    }
+    try {
+      const parsed = JSON.parse(value);
+      return JSON.stringify(parsed, null, 2);
+    } catch {
+      return value;
+    }
+  }
+
   function renderStorageEntry(entry) {
     const card = document.createElement("div");
     card.style.cssText = [
@@ -175,7 +187,7 @@
     ].join(";");
 
     const valueLabel = document.createElement("dd");
-    valueLabel.textContent = entry.value ?? "null";
+    valueLabel.textContent = formatStorageValue(entry.value);
     valueLabel.style.cssText = [
       "margin:0",
       "font-size:0.9rem",
