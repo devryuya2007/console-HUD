@@ -4,6 +4,8 @@
   const MAX_LOG_HISTORY = 24;
   const MAX_COMMAND_HISTORY = 8;
   const AUTO_HIDE_DELAY = 4500;
+  // CSP によって文字列の評価が禁止される環境では、実行できない旨を共有するためのメッセージ
+  const EXECUTION_BLOCKED_MESSAGE = "このページの Content Security Policy によって外部コードの評価が禁止されています";
   const CONSOLE_METHODS = ["log", "info", "warn", "error"];
   const consoleHistory = [];
   const commandResults = [];
@@ -364,6 +366,7 @@
   /**
    * console 実行結果を HUD に記録
    * @param {string} code
+   * @note CSP により文字列評価が禁止されているため、実行自体は行わず経緯を残す
    */
   function executeConsoleCode(code) {
     const trimmed = code.trim();
@@ -373,16 +376,9 @@
     const record = {
       code: trimmed,
       timestamp: new Date(),
-      success: true,
-      message: "",
+      success: false,
+      message: EXECUTION_BLOCKED_MESSAGE,
     };
-    try {
-      const result = window.eval(trimmed);
-      record.message = serializeArgument(result);
-    } catch (error) {
-      record.success = false;
-      record.message = String(error);
-    }
     commandResults.unshift(record);
     if (commandResults.length > MAX_COMMAND_HISTORY) {
       commandResults.pop();
@@ -426,7 +422,7 @@
 
     const input = document.createElement("textarea");
     input.rows = 2;
-    input.placeholder = "ここにコードを入力して Enter で実行";
+    input.placeholder = "CSP で外部コードの評価が禁止されているため結果のみ表示されます";
     input.style.cssText = [
       "width:100%",
       "padding:8px",
