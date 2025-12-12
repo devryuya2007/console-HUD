@@ -101,11 +101,13 @@
 
   function hideOverlay() {
     overlay.style.opacity = "0";
+    overlay.style.pointerEvents = "none";
     window.setTimeout(() => {
       overlay.hidden = true;
     }, 200);
     storagePanelVisible = false;
   }
+
   function gatherStorageEntries() {
     const entries = [];
     try {
@@ -280,8 +282,8 @@
     panelBody.innerHTML = "";
     panelBody.append(renderStoragePanel());
     overlay.hidden = false;
+    overlay.style.pointerEvents = "auto";
     overlay.style.opacity = "1";
-    resetHideTimer();
   }
 
   function toggleStoragePanel() {
