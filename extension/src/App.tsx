@@ -9,7 +9,7 @@ interface ShortcutAction {
 const shortcutActions: ShortcutAction[] = [
   {
     command: "hard-reset",
-    hotkey: "Ctrl + Shift + Alt + Y",
+    hotkey: "Ctrl + Shift + Y",
     label: "ハードリセット",
     gradient: "from-indigo-500/60 to-slate-900/60",
     shadow: "shadow-indigo-500/40",
