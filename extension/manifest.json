@@ -9,7 +9,11 @@
   },
   "action": {
     "default_title": "console-HUD",
-    "default_popup": "popup.html"
+    "default_popup": "popup.html",
+    "default_icon": {
+      "48": "icon.png",
+      "128": "icon.png"
+    }
   },
   "background": {
     "service_worker": "service-worker.js"
