@@ -1,18 +1,8 @@
 (() => {
-  const PANEL_CONSOLE = "console";
-  const PANEL_STORAGE = "storage";
-  const MAX_LOG_HISTORY = 24;
-  const MAX_COMMAND_HISTORY = 8;
+  const MESSAGE_SHOW_LOCAL_STORAGE = "SHOW_LOCALSTORAGE_PANEL";
   const AUTO_HIDE_DELAY = 4500;
-  // CSP によって文字列の評価が禁止される環境では、実行できない旨を共有するためのメッセージ
-  const EXECUTION_BLOCKED_MESSAGE = "このページの Content Security Policy によって外部コードの評価が禁止されています";
-  const CONSOLE_METHODS = ["log", "info", "warn", "error"];
-  const consoleHistory = [];
-  const commandResults = [];
   let hideTimerId = 0;
   let storagePanelVisible = false;
-  let consolePanelVisible = false;
-  let currentPanelType = "";
 
   const overlay = document.createElement("div");
   overlay.style.cssText = [
@@ -44,16 +34,46 @@
   const header = document.createElement("div");
   header.style.cssText = [
     "display:flex",
-    "flex-direction:column",
-    "gap:4px",
+    "justify-content:space-between",
+    "align-items:center",
+    "gap:12px",
     "letter-spacing:0.15em",
     "font-size:0.65rem",
     "text-transform:uppercase",
     "color:rgba(148,163,184,0.8)",
   ].join(";");
+
+  const headerInfo = document.createElement("div");
+  headerInfo.style.cssText = [
+    "display:flex",
+    "flex-direction:column",
+    "gap:3px",
+  ].join(";");
   const headerTitle = document.createElement("span");
   const headerTimestamp = document.createElement("span");
-  header.append(headerTitle, headerTimestamp);
+  headerInfo.append(headerTitle, headerTimestamp);
+
+  const closeButton = document.createElement("button");
+  closeButton.type = "button";
+  closeButton.textContent = "✕";
+  closeButton.style.cssText = [
+    "width:32px",
+    "height:32px",
+    "border-radius:9999px",
+    "border:1px solid rgba(148,163,184,0.6)",
+    "background:rgba(15,23,42,0.6)",
+    "color:#e2e8f0",
+    "font-size:1rem",
+    "cursor:pointer",
+    "display:inline-flex",
+    "align-items:center",
+    "justify-content:center",
+  ].join(";");
+  closeButton.addEventListener("click", () => {
+    hideOverlay();
+  });
+
+  header.append(headerInfo, closeButton);
 
   const panelBody = document.createElement("div");
   panelBody.style.cssText = [
@@ -66,81 +86,6 @@
 
   overlay.append(header, panelBody);
 
-  /**
-   * HTML escape 用
-   * @param {string} value
-   * @returns {string}
-   */
-  const escapeHtml = (value) => value.replace(/[&<>"']/g, (char) => {
-    switch (char) {
-      case "&":
-        return "&amp;";
-      case "<":
-        return "&lt;";
-      case ">":
-        return "&gt;";
-      case '"':
-        return "&quot;";
-      case "'":
-        return "&#39;";
-      default:
-        return char;
-    }
-  });
-
-  /**
-   * 任意の値を文字列化
-   * @param {*} value
-   * @returns {string}
-   */
-  function serializeArgument(value) {
-    if (typeof value === "string") {
-      return value;
-    }
-    if (
-      value === null
-      || typeof value === "undefined"
-      || typeof value === "number"
-      || typeof value === "boolean"
-    ) {
-      return String(value);
-    }
-    try {
-      return JSON.stringify(value, null, 2);
-    } catch {
-      return String(value);
-    }
-  }
-
-  /**
-   * コンソール履歴をキューとして管理
-   * @param {string} level
-   * @param {Array<*>} args
-   */
-  function pushConsoleHistory(level, args) {
-    const formatted = args.map(serializeArgument).join(" ");
-    consoleHistory.unshift({
-      level,
-      message: formatted,
-      timestamp: new Date(),
-    });
-    if (consoleHistory.length > MAX_LOG_HISTORY) {
-      consoleHistory.pop();
-    }
-  }
-
-  const originalConsole = {};
-  CONSOLE_METHODS.forEach((method) => {
-    originalConsole[method] = console[method].bind(console);
-    console[method] = (...args) => {
-      pushConsoleHistory(method, args);
-      originalConsole[method](...args);
-    };
-  });
-
-  /**
-   * overlay を body に追加
-   */
   function attachOverlay() {
     if (overlay.parentElement) {
       return;
@@ -156,22 +101,18 @@
     });
   }
 
-  /**
-   * overlay を非表示にする
-   */
   function hideOverlay() {
     overlay.style.opacity = "0";
     window.setTimeout(() => {
       overlay.hidden = true;
     }, 200);
     storagePanelVisible = false;
-    consolePanelVisible = false;
-    currentPanelType = "";
+    if (hideTimerId) {
+      window.clearTimeout(hideTimerId);
+      hideTimerId = 0;
+    }
   }
 
-  /**
-   * overlay 再表示用タイマー
-   */
   function resetHideTimer() {
     if (hideTimerId) {
       window.clearTimeout(hideTimerId);
@@ -181,63 +122,6 @@
     }, AUTO_HIDE_DELAY);
   }
 
-  /**
-   * ログをカード化して返す
-   * @param {Array<typeof consoleHistory[number]>} entries
-   */
-  function createConsoleLogElements(entries) {
-    return entries.map((entry) => {
-      const card = document.createElement("div");
-      card.style.cssText = [
-        "display:flex",
-        "flex-direction:column",
-        "gap:4px",
-        "padding:10px 12px",
-        "border-radius:16px",
-        "background:rgba(15,23,42,0.7)",
-        "border:1px solid rgba(148,163,184,0.25)",
-        "color:#e2e8f0",
-        "font-size:0.8rem",
-        "white-space:pre-wrap",
-        "overflow-wrap:break-word",
-      ].join(";");
-
-      const badge = document.createElement("strong");
-      badge.style.cssText = [
-        "display:inline-flex",
-        "gap:6px",
-        "align-items:center",
-        "font-size:0.7rem",
-        "text-transform:uppercase",
-        "letter-spacing:0.2em",
-      ].join(";");
-      const dot = document.createElement("span");
-      dot.style.cssText = [
-        "width:8px",
-        "height:8px",
-        "border-radius:9999px",
-        "background:rgba(59,130,246,0.9)",
-      ].join(";");
-      const level = document.createElement("span");
-      level.textContent = entry.level;
-      badge.append(dot, level);
-
-      const body = document.createElement("p");
-      body.textContent = entry.message;
-
-      const footer = document.createElement("span");
-      footer.style.fontSize = "0.65rem";
-      footer.style.color = "rgba(148,163,184,0.8)";
-      footer.textContent = entry.timestamp.toLocaleTimeString();
-
-      card.append(badge, body, footer);
-      return card;
-    });
-  }
-
-  /**
-   * localStorage を列挙して構造にする
-   */
   function gatherStorageEntries() {
     const entries = [];
     try {
@@ -257,11 +141,6 @@
     return entries;
   }
 
-  /**
-   * localStorage の 1 エントリをカード化して整列して返す
-   * @param {{key: string, value: string | null}} entry
-   * @returns {HTMLDivElement}
-   */
   function renderStorageEntry(entry) {
     const card = document.createElement("div");
     card.style.cssText = [
@@ -315,9 +194,6 @@
     return card;
   }
 
-  /**
-   * localStorage の UI を生成する
-   */
   function renderStoragePanel() {
     const content = document.createElement("div");
     content.style.display = "flex";
@@ -401,206 +277,28 @@
     return content;
   }
 
-  /**
-   * console 実行結果を HUD に記録
-   * @param {string} code
-   * @note CSP により文字列評価が禁止されているため、実行自体は行わず経緯を残す
-   */
-  function executeConsoleCode(code) {
-    const trimmed = code.trim();
-    if (!trimmed) {
-      return;
-    }
-    const record = {
-      code: trimmed,
-      timestamp: new Date(),
-      success: false,
-      message: EXECUTION_BLOCKED_MESSAGE,
-    };
-    commandResults.unshift(record);
-    if (commandResults.length > MAX_COMMAND_HISTORY) {
-      commandResults.pop();
-    }
-    showConsolePanel();
-  }
-
-  /**
-   * console panel を組み立てる
-   */
-  function renderConsolePanel() {
-    const container = document.createElement("div");
-    container.style.display = "flex";
-    container.style.flexDirection = "column";
-    container.style.gap = "12px";
-
-    const logSection = document.createElement("div");
-    logSection.style.display = "flex";
-    logSection.style.flexDirection = "column";
-    logSection.style.gap = "8px";
-
-    const logEntries = createConsoleLogElements(consoleHistory.slice(0, 10));
-    if (!logEntries.length) {
-      const placeholder = document.createElement("span");
-      placeholder.textContent = "console にログが残っていません";
-      placeholder.style.color = "rgba(226,232,240,0.7)";
-      placeholder.style.fontSize = "0.8rem";
-      logSection.append(placeholder);
-    } else {
-      logEntries.forEach((item) => logSection.append(item));
-    }
-
-    const execSection = document.createElement("div");
-    execSection.style.display = "flex";
-    execSection.style.flexDirection = "column";
-    execSection.style.gap = "8px";
-    execSection.style.padding = "10px";
-    execSection.style.borderRadius = "18px";
-    execSection.style.background = "rgba(2,6,23,0.7)";
-    execSection.style.border = "1px solid rgba(59,130,246,0.4)";
-
-    const input = document.createElement("textarea");
-    input.rows = 2;
-    input.placeholder = "CSP で外部コードの評価が禁止されているため結果のみ表示されます";
-    input.style.cssText = [
-      "width:100%",
-      "padding:8px",
-      "border-radius:12px",
-      "border:1px solid rgba(148,163,184,0.4)",
-      "background:rgba(15,23,42,0.6)",
-      "color:#f8fafc",
-      "font-size:0.8rem",
-      "font-family:inherit",
-      "resize:vertical",
-    ].join(";");
-
-    const runButton = document.createElement("button");
-    runButton.textContent = "HUD から実行";
-    runButton.style.cssText = [
-      "align-self:flex-end",
-      "padding:6px 18px",
-      "border-radius:9999px",
-      "border:none",
-      "background:linear-gradient(130deg, #38bdf8, #6366f1)",
-      "color:#f8fafc",
-      "font-size:0.75rem",
-      "font-weight:700",
-      "cursor:pointer",
-    ].join(";");
-
-    runButton.addEventListener("click", () => {
-      executeConsoleCode(input.value);
-    });
-    input.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" && !event.shiftKey) {
-        event.preventDefault();
-        executeConsoleCode(input.value);
-      }
-    });
-
-    execSection.append(input, runButton);
-
-    const resultList = document.createElement("div");
-    resultList.style.display = "flex";
-    resultList.style.flexDirection = "column";
-    resultList.style.gap = "6px";
-
-    if (!commandResults.length) {
-      const note = document.createElement("span");
-      note.textContent = "実行結果はここに表示されます";
-      note.style.color = "rgba(226,232,240,0.65)";
-      resultList.append(note);
-    } else {
-      commandResults.forEach((result) => {
-        const row = document.createElement("div");
-        row.style.cssText = [
-          "padding:8px 10px",
-          "border-radius:12px",
-          "background:rgba(15,23,42,0.65)",
-          "border:1px solid rgba(148,163,184,0.2)",
-          "font-size:0.75rem",
-          "display:flex",
-          "flex-direction:column",
-          "gap:4px",
-        ].join(";");
-
-        const status = document.createElement("strong");
-        status.style.color = result.success ? "#34d399" : "#f87171";
-        status.textContent = result.success ? "success" : "error";
-        const codeLine = document.createElement("span");
-        codeLine.textContent = result.code;
-        const message = document.createElement("p");
-        message.style.margin = "0";
-        message.textContent = result.message;
-        const footer = document.createElement("span");
-        footer.style.color = "rgba(148,163,184,0.7)";
-        footer.style.fontSize = "0.65rem";
-        footer.textContent = result.timestamp.toLocaleTimeString();
-        row.append(status, codeLine, message, footer);
-        resultList.append(row);
-      });
-    }
-
-    container.append(logSection, execSection, resultList);
-    return container;
-  }
-
-  /**
-   * 表示用のパネルを切り替える
-   * @param {string} type
-   */
-  function showConsolePanel() {
-    storagePanelVisible = false;
-    consolePanelVisible = true;
-    currentPanelType = PANEL_CONSOLE;
-    headerTimestamp.textContent = new Date().toLocaleTimeString();
-    headerTitle.textContent = "console";
-    panelBody.innerHTML = "";
-    panelBody.append(renderConsolePanel());
-    overlay.hidden = false;
-    overlay.style.opacity = "1";
-  }
-
-  function toggleConsolePanel() {
-    if (consolePanelVisible && currentPanelType === PANEL_CONSOLE) {
-      hideOverlay();
-      return;
-    }
-    showConsolePanel();
-  }
-
-  function toggleStoragePanel() {
-    if (storagePanelVisible && currentPanelType === PANEL_STORAGE) {
-      hideOverlay();
-      return;
-    }
+  function showStoragePanel() {
     storagePanelVisible = true;
-    currentPanelType = PANEL_STORAGE;
-    headerTimestamp.textContent = new Date().toLocaleTimeString();
     headerTitle.textContent = "localStorage";
+    headerTimestamp.textContent = new Date().toLocaleTimeString();
     panelBody.innerHTML = "";
     panelBody.append(renderStoragePanel());
     overlay.hidden = false;
     overlay.style.opacity = "1";
+    resetHideTimer();
   }
 
-  /**
-   * メッセージをパネルへ橋渡し
-   */
   chrome.runtime.onMessage.addListener((message) => {
     if (!message || typeof message.type !== "string") {
       return;
     }
-    if (message.type === "SHOW_CONSOLE_PANEL") {
-      toggleConsolePanel();
-      return;
-    }
-    if (message.type === "SHOW_LOCALSTORAGE_PANEL") {
-      toggleStoragePanel();
+    if (message.type === MESSAGE_SHOW_LOCAL_STORAGE) {
+      showStoragePanel();
     }
   });
 
   window.addEventListener("storage", () => {
-    if (storagePanelVisible && currentPanelType === PANEL_STORAGE) {
+    if (storagePanelVisible) {
       panelBody.innerHTML = "";
       panelBody.append(renderStoragePanel());
     }

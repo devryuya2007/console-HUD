@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "console-HUD",
-  "description": "ショートカットキーからコンソールやストレージの操作を呼び出せる軽量デバッグHUD",
+  "description": "ショートカットキーから localStorage やリセット操作を呼び出せる軽量デバッグHUD",
   "version": "0.1.0",
   "icons": {
     "48": "vite.svg",
@@ -31,16 +31,10 @@
   ],
   "commands": {
     "hard-reset": {
-    "suggested_key": {
-      "default": "Ctrl+Shift+Y"
-    },
-      "description": "Hard Reset: キャッシュを無視してページを再読み込みする"
-    },
-    "console-display": {
       "suggested_key": {
-        "default": "Ctrl+Shift+X"
+        "default": "Ctrl+Shift+Y"
       },
-      "description": "console 表示パネルをオーバーレイで表示する"
+      "description": "Hard Reset: キャッシュを無視してページを再読み込みする"
     },
     "localstorage-display": {
       "suggested_key": {

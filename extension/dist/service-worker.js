@@ -1,4 +1,3 @@
-const MESSAGE_SHOW_CONSOLE = "SHOW_CONSOLE_PANEL";
 const MESSAGE_SHOW_LOCAL_STORAGE = "SHOW_LOCALSTORAGE_PANEL";
 
 const DATA_TO_REMOVE = {
@@ -123,11 +122,6 @@ async function handleCommand(command) {
       return;
     }
     chrome.tabs.reload(activeTab.id, { bypassCache: true });
-    return;
-  }
-
-  if (command === "console-display") {
-    postPanelMessage(activeTab.id, MESSAGE_SHOW_CONSOLE);
     return;
   }
 

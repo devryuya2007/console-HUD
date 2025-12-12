@@ -15,13 +15,6 @@ const shortcutActions: ShortcutAction[] = [
     shadow: "shadow-indigo-500/40",
   },
   {
-    command: "console-display",
-    hotkey: "Ctrl + Shift + X",
-    label: "console 表示",
-    gradient: "from-sky-500/60 to-slate-900/60",
-    shadow: "shadow-sky-500/40",
-  },
-  {
     command: "localstorage-display",
     hotkey: "Ctrl + Shift + V",
     label: "localStorage 表示",
