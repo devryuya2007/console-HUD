@@ -95,7 +95,21 @@ function clearSiteData(origin) {
     const options = buildRemovalOptions(origin);
     chrome.browsingData.remove(options, DATA_TO_REMOVE, () => {
       if (chrome.runtime.lastError) {
-        console.warn("browsingData.remove failed:", chrome.runtime.lastError.message);
+        const message = chrome.runtime.lastError.message || "";
+        console.warn("browsingData.remove failed:", message);
+        if (origin && message.includes("doesn't support filtering by origin")) {
+          chrome.browsingData.remove(
+            { since: 0, originTypes: ORIGIN_TYPE_TARGETS },
+            DATA_TO_REMOVE,
+            () => {
+              if (chrome.runtime.lastError) {
+                console.warn("fallback browsingData.remove failed:", chrome.runtime.lastError.message);
+              }
+              resolve();
+            },
+          );
+          return;
+        }
       }
       resolve();
     });
