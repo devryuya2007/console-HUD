@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ベースフォントと背景を安定させて全体のトーンを統一 */
+:root {
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 背景色と余白をグローバルに設定 */
+body {
+  @apply min-h-screen bg-slate-950 text-slate-50 antialiased;
+}
