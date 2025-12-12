@@ -32,7 +32,7 @@
   "commands": {
     "hard-reset": {
       "suggested_key": {
-        "default": "Ctrl+Shift+Y"
+        "default": "Ctrl+Shift+Alt+Y"
       },
       "description": "Hard Reset: キャッシュを無視してページを再読み込みする"
     },
