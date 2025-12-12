@@ -9,6 +9,7 @@
   const commandResults = [];
   let hideTimerId = 0;
   let storagePanelVisible = false;
+  let consolePanelVisible = false;
   let currentPanelType = "";
 
   const overlay = document.createElement("div");
@@ -162,6 +163,7 @@
       overlay.hidden = true;
     }, 200);
     storagePanelVisible = false;
+    consolePanelVisible = false;
     currentPanelType = "";
   }
 
@@ -514,6 +516,7 @@
    */
   function showConsolePanel() {
     storagePanelVisible = false;
+    consolePanelVisible = true;
     currentPanelType = PANEL_CONSOLE;
     headerTimestamp.textContent = new Date().toLocaleTimeString();
     headerTitle.textContent = "console";
@@ -521,7 +524,14 @@
     panelBody.append(renderConsolePanel());
     overlay.hidden = false;
     overlay.style.opacity = "1";
-    resetHideTimer();
+  }
+
+  function toggleConsolePanel() {
+    if (consolePanelVisible && currentPanelType === PANEL_CONSOLE) {
+      hideOverlay();
+      return;
+    }
+    showConsolePanel();
   }
 
   function toggleStoragePanel() {
@@ -547,7 +557,7 @@
       return;
     }
     if (message.type === "SHOW_CONSOLE_PANEL") {
-      showConsolePanel();
+      toggleConsolePanel();
       return;
     }
     if (message.type === "SHOW_LOCALSTORAGE_PANEL") {
