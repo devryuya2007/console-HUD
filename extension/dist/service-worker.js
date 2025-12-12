@@ -1,19 +1,7 @@
 const MESSAGE_SHOW_LOCAL_STORAGE = "SHOW_LOCALSTORAGE_PANEL";
 
 const DATA_TO_REMOVE = {
-  appcache: true,
-  cache: true,
-  cacheStorage: true,
-  cookies: true,
-  downloads: true,
-  fileSystems: true,
-  formData: true,
-  indexedDB: true,
   localStorage: true,
-  pluginData: true,
-  serviceWorkers: true,
-  serverBoundCertificates: true,
-  webSQL: true,
 };
 // protected / unprotected Web の両方を明示して https などの origin も確実に対象にする
 const ORIGIN_TYPE_TARGETS = {
