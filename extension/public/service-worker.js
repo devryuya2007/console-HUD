@@ -113,6 +113,7 @@ async function handleCommand(command) {
   }
 
   if (command === "hard-reset") {
+    console.log("[hud] hard-reset command received on tab", activeTab.id, activeTab.url);
     await performHardReset(activeTab);
     return;
   }
