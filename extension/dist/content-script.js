@@ -300,12 +300,20 @@
     resetHideTimer();
   }
 
+  function toggleStoragePanel() {
+    if (storagePanelVisible) {
+      hideOverlay();
+      return;
+    }
+    showStoragePanel();
+  }
+
   chrome.runtime.onMessage.addListener((message) => {
     if (!message || typeof message.type !== "string") {
       return;
     }
     if (message.type === MESSAGE_SHOW_LOCAL_STORAGE) {
-      showStoragePanel();
+      toggleStoragePanel();
     }
   });
 
