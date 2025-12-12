@@ -116,7 +116,6 @@ async function handleCommand(command) {
   }
 
   if (command === "hard-reset") {
-    console.log("[hud] hard-reset command received on tab", activeTab.id, activeTab.url);
     await performHardReset(activeTab);
     return;
   }
@@ -132,6 +131,8 @@ async function handleCommand(command) {
  */
 async function performHardReset(tab) {
   const origin = buildOrigin(tab.url);
+  // まず origin を特定してから localStorage / indexedDB をまとめて削除する
+  // 削除完了後にキャッシュ無視のリロードを行い、ストレージを空にした状態でページを再表示する
   try {
     await clearSiteData(origin);
   } finally {
