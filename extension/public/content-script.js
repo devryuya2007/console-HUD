@@ -182,7 +182,6 @@
       "margin:0",
       "font-size:0.7rem",
       "letter-spacing:0.25em",
-      "text-transform:uppercase",
       "color:rgba(148,163,184,0.9)",
     ].join(";");
 
