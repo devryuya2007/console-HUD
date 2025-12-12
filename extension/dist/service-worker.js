@@ -114,19 +114,22 @@ async function handleCommand(command) {
   }
 
   if (command === "hard-reset") {
-    // サイトデータを消去してから強制リロードする
-    const origin = buildOrigin(activeTab.url);
-    try {
-      await clearSiteData(origin);
-    } catch {
-      return;
-    }
-    chrome.tabs.reload(activeTab.id, { bypassCache: true });
+    await performHardReset(activeTab);
     return;
   }
 
   if (command === "localstorage-display") {
     postPanelMessage(activeTab.id, MESSAGE_SHOW_LOCAL_STORAGE);
+  }
+}
+
+async function performHardReset(tab) {
+  const origin = buildOrigin(tab.url);
+  try {
+    await clearSiteData(origin);
+    chrome.tabs.reload(tab.id, { bypassCache: true });
+  } catch {
+    //
   }
 }
 
