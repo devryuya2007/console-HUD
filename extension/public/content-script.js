@@ -1,7 +1,5 @@
 (() => {
   const MESSAGE_SHOW_LOCAL_STORAGE = "SHOW_LOCALSTORAGE_PANEL";
-  const AUTO_HIDE_DELAY = 4500;
-  let hideTimerId = 0;
   let storagePanelVisible = false;
 
   const overlay = document.createElement("div");
@@ -107,19 +105,6 @@
       overlay.hidden = true;
     }, 200);
     storagePanelVisible = false;
-    if (hideTimerId) {
-      window.clearTimeout(hideTimerId);
-      hideTimerId = 0;
-    }
-  }
-
-  function resetHideTimer() {
-    if (hideTimerId) {
-      window.clearTimeout(hideTimerId);
-    }
-    hideTimerId = window.setTimeout(() => {
-      hideOverlay();
-    }, AUTO_HIDE_DELAY);
   }
 
   function gatherStorageEntries() {
@@ -297,7 +282,6 @@
     panelBody.append(renderStoragePanel());
     overlay.hidden = false;
     overlay.style.opacity = "1";
-    resetHideTimer();
   }
 
   function toggleStoragePanel() {
