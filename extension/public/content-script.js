@@ -1,4 +1,19 @@
 (() => {
+  // ---------------------------------------------
+  // 目的:
+  // - ショートカットを押したタイミングで activeTab 注入される設計なので、
+  //   同じタブで content-script.js が複数回実行される可能性がある
+  // - その時に HUD が二重生成されると「閉じるつもりが開く」などの事故が起きる
+  // 対策:
+  // - 1タブにつき HUD を1インスタンスだけ生成し、2回目以降は何もしない
+  // - 開閉のトグルは、最初に作ったリスナーがメッセージを受けて行う
+  // ---------------------------------------------
+  const GLOBAL_KEY = "__consoleHudInstalled__";
+  if (window[GLOBAL_KEY]) {
+    return;
+  }
+  window[GLOBAL_KEY] = true;
+
   const MESSAGE_SHOW_LOCAL_STORAGE = "SHOW_LOCALSTORAGE_PANEL";
   let storagePanelVisible = false;
 
