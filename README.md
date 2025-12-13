@@ -6,7 +6,7 @@
 
 DevTools を開かずに `Ctrl+Shift+V / Ctrl+Shift+Y` だけで localStorage / IndexedDB を可視化して消し、すぐリロードできる HUD 付き Chrome 拡張。
 
-## 目次
+## TOC
 
 1. [Features](#features)
 2. [Install](#install)
