@@ -93,3 +93,10 @@ console-HUD (root)
 ## License
 
 MIT License (c) 2025 devryuya2007 — 詳細は [LICENSE](LICENSE) を参照。
+
+## Support
+
+- **公式ページ（README）**：この README は console-HUD の公式ホームページとして機能していて、概要・インストール・使用方法・権限説明・FAQ をまとめています。
+- **問い合わせ先**：質問やバグ報告は [GitHub Issues](https://github.com/devryuya2007/console-HUD/issues) へ。support URL としてこのリンクを登録しているので、気軽に「再現手順」「想定される挙動」「環境（Chrome バージョン、OS）」を書いてください。
+- **サポートの流れ**：届いた Issue が対応目安に達したらラベル・ステータスを付けて返信します。急ぎの操作要望はタイトルに「【Urgent】」などを加えてください。
+- **Privacy**：ブラウザ内の localStorage/IndexedDB を表示・削除するのはこの拡張だけで行い、外部への送信はしません。詳細はこの README 内の [Permissions / Privacy](#permissions--privacy) セクションをご覧ください。
