@@ -8,21 +8,14 @@ DevTools を開かずに `Ctrl+Shift+V / Ctrl+Shift+Y` だけで localStorage / 
 
 ## 目次
 
-1. [スクショ / デモ](#スクショ--デモ)
-2. [Features](#features)
-3. [Install](#install)
-4. [Usage ＆ Shortcuts](#usage--shortcuts)
-5. [Permissions / Privacy](#permissions--privacy)
-6. [Folder structure](#folder-structure)
-7. [Development / Build](#development--build)
-8. [FAQ / Troubleshooting](#faq--troubleshooting)
-9. [License](#license)
-
-## スクショ / デモ
-
-![HUD preview](./extension/public/hud-preview.png)
-
-> HUD のレイアウト（タブごとに色分け＋ゆっくり光るグラデーション）とショートカット説明をまとめたスクショ。まだ実物が無い場合は `extension/public/hud-preview.png` を追加してね。
+1. [Features](#features)
+2. [Install](#install)
+3. [Usage ＆ Shortcuts](#usage--shortcuts)
+4. [Permissions / Privacy](#permissions--privacy)
+5. [Folder structure](#folder-structure)
+6. [Development / Build](#development--build)
+7. [FAQ / Troubleshooting](#faq--troubleshooting)
+8. [License](#license)
 
 ## Features
 
@@ -52,10 +45,12 @@ DevTools を開かずに `Ctrl+Shift+V / Ctrl+Shift+Y` だけで localStorage / 
 
 ## Permissions / Privacy
 
-- `storage`：localStorage / IndexedDB を扱うために必要。
-- `browsingData`：ショートカットでストレージを削除するために使用。
-- `activeTab`：HUD 表示やリロード対象のタブを限定。
-- 収集データはブラウザ内で完結し、外部サーバーへ送信しない。ショートカットで処理した JSON も HUD 表示のみに使用し、永続保存しない。
+- `storage`：各タブの localStorage / IndexedDB を取得し、HUD で表示するため。
+- `browsingData`：ショートカット（Ctrl+Shift+Y）から localStorage / IndexedDB を削除するため。
+- `tabs`：`chrome.tabs.reload` で再読み込みしたり、対象タブの情報を取得するため。
+- `activeTab`：ショートカットを実行したタブに限定して HUD を操作するため。
+- `scripting`：content script を挿入し、HUD オーバーレイをページ上に描画するため。
+- `host_permissions: "<all_urls>"`：任意のサイト上で HUD を動作させるため。表示した JSON や削除対象のストレージはブラウザ内で完結し、外部送信はしない。
 
 ## Folder structure
 
