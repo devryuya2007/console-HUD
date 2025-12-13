@@ -25,14 +25,6 @@
     "scripting",
     "browsingData"
   ],
-  "host_permissions": ["<all_urls>"],
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["content-script.js"],
-      "run_at": "document_start"
-    }
-  ],
   "commands": {
     "hard-reset": {
       "suggested_key": {

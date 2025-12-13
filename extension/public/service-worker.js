@@ -41,6 +41,32 @@ function postPanelMessage(tabId, messageType) {
 }
 
 /**
+ * activeTab の範囲で content-script を注入する
+ * - `<all_urls>` のような広い host 権限を要求しないための設計
+ * - ユーザー操作（ショートカット or popup）をトリガーに、そのタブだけへ注入する
+ * @param {number} tabId
+ * @returns {Promise<void>}
+ */
+function ensureContentScriptInjected(tabId) {
+  return new Promise((resolve) => {
+    chrome.scripting.executeScript(
+      {
+        target: { tabId },
+        files: ["content-script.js"],
+      },
+      () => {
+        // Chrome 内蔵ページや権限対象外では注入できず lastError になる
+        // ここでは「注入できたらHUDを出す、できなかったら何もしない」方針で握りつぶす
+        if (chrome.runtime.lastError) {
+          return resolve();
+        }
+        resolve();
+      },
+    );
+  });
+}
+
+/**
  * URL から origin を抽出するヘルパー
  * @param {string | undefined} url
  * @returns {string | null}
@@ -121,6 +147,8 @@ async function handleCommand(command) {
   }
 
   if (command === "localstorage-display") {
+    // HUD はページ上で動くので、まず activeTab の範囲で content-script を注入してから表示要求を送る
+    await ensureContentScriptInjected(activeTab.id);
     postPanelMessage(activeTab.id, MESSAGE_SHOW_LOCAL_STORAGE);
   }
 }
