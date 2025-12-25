@@ -1,0 +1,9 @@
+{
+  "release-type": "node",
+  "packages": {
+    "extension": {
+      "release-type": "node",
+      "package-name": "console-hud"
+    }
+  }
+}
