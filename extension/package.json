@@ -2,7 +2,7 @@
   "name": "console-hud",
   "description": "console-HUD Chrome 拡張機能の開発用 Vite プロジェクト",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0 --port 4175 --strictPort",
